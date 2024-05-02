@@ -9,7 +9,7 @@ class MyCalc():
 
     def send(self, s):
         print(f"Нажал {s}")
-#33333
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
