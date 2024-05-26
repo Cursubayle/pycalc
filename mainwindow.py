@@ -11,6 +11,8 @@ ops = ["=", "+", "-", "*", "/", "sqrt", "pow"]
 acts = ["AC", "C"]
 digits = list("0123456789.")
 
+#1233
+
 class State(Enum):
     OPS = 0
     ACTS = 1
@@ -22,7 +24,7 @@ class State(Enum):
 class MyCalc():
     def __init__(self):
         self.input = []
-        self.state = State.DIGITS
+        self.state = State.OPS
         self.stack = []
         print (self.state)
 
@@ -32,7 +34,66 @@ class MyCalc():
         self.stack.clear()
 
 
-    def send(self, s):
+
+    def send(self,s):
+        if s == 'C':
+            self.input.clear()
+            self.stack.clear()
+            self.state = State.OPS
+
+
+        match self.state:
+            case State.DIGITS:
+                if s in digits:
+                    self.input.append(s)
+
+                elif s in ops and len(self.input) > 0 and len(self.stack) == 2:
+                    self.stack.append(''.join(map(str, self.input)))
+                    self.compute(self.stack)
+
+                elif s in ops:
+                    self.stack.append(''.join(map(str, self.input)))
+                    self.stack.append(s)
+                    self.input.clear()
+                    self.state = State.OPS
+
+
+
+
+                print("input",self.input)
+                print('state',self.state)
+                print("stack",self.stack)
+                print(f"Нажал {s}")
+
+
+                return State.DIGITS
+
+            case State.OPS:
+
+                if s in ops:
+                    if  len(self.stack) > 0 and self.stack[0] in ops or len(self.stack) == 2 and self.stack[1] in ops:
+                        self.stack.pop()
+
+                    self.stack.append(s)
+                    print('wew')
+
+                elif s in digits:
+                    self.input.append(s)
+                    self.state = State.DIGITS
+                    print('wow')
+                print("input",self.input)
+                print('state',self.state)
+                print("stack",self.stack)
+                print(f"Нажал {s}")
+
+
+
+
+
+
+
+
+    def seend(self, s):
         if self.state == State.DIGITS:
             if len(self.input) == 0 and s == '-':
                 self.input.append(s)
@@ -42,7 +103,7 @@ class MyCalc():
             elif s in digits:
                 self.input.append(s)
             elif len(self.input) > 1 and s in ops:
-                if s == '=' and len(self.input) > 1 and len(self.stack) > 1:
+                if s in ops and len(self.input) > 1 and len(self.stack) > 1:
                     self.stack.append(''.join(map(str, self.input)))
                     self.compute(self.stack)
                 else:
