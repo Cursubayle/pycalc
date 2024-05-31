@@ -23,6 +23,7 @@ class State(Enum):
 
 class MyCalc():
     def __init__(self):
+        self.current_line = "0"
         self.input = []
         self.state = State.OPS
         self.stack = []
@@ -32,6 +33,7 @@ class MyCalc():
         print("result is: ",eval(''.join(map(str, self.stack))))
         self.input.clear()
         self.stack.clear()
+        print(self.input, self.stack)
 
 
 
@@ -46,17 +48,20 @@ class MyCalc():
             case State.DIGITS:
                 if s in digits:
                     self.input.append(s)
+                    print('3')
 
-                elif s in ops and len(self.input) > 0 and len(self.stack) == 2:
+                elif s in ops and len(self.input) > 0 and len(self.stack) == 2 or len(self.stack) > 2 and len(self.input) > 0:
                     self.stack.append(''.join(map(str, self.input)))
                     self.compute(self.stack)
-
+                    if s != "=":
+                        self.send(s)
+                    print('1')
                 elif s in ops:
                     self.stack.append(''.join(map(str, self.input)))
                     self.stack.append(s)
                     self.input.clear()
                     self.state = State.OPS
-
+                    print('2')
 
 
 
@@ -66,12 +71,16 @@ class MyCalc():
                 print(f"Нажал {s}")
 
 
-                return State.DIGITS
+
 
             case State.OPS:
 
                 if s in ops:
-                    if  len(self.stack) > 0 and self.stack[0] in ops or len(self.stack) == 2 and self.stack[1] in ops:
+                    if len(self.stack) > 2 and len(self.input) > 0:
+                        self.stack.append(''.join(map(str, self.input)))
+                        self.compute(self.stack)
+
+                    elif  len(self.stack) > 0 and self.stack[0] in ops or len(self.stack) == 2 and self.stack[1] in ops:
                         self.stack.pop()
 
                     self.stack.append(s)
@@ -156,9 +165,9 @@ class MainWindow(QMainWindow):
                           self.ui.pushButton_plus, self.ui.pushButton_minus, self.ui.pushButton_mult, self.ui.pushButton_div,
                           self.ui.pushButton_dot, self.ui.pushButton_AC, self.ui.pushButton_sqrt, self.ui.pushButton_pow]:
             b.clicked.connect(self.click_eq)
+
     def click_eq(self):
         mc.send(self.sender().text())
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
