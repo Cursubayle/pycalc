@@ -50,18 +50,20 @@ class MyCalc():
                     self.input.append(s)
                     print('3')
 
-                elif s in ops and len(self.input) > 0 and len(self.stack) == 2 or len(self.stack) > 2 and len(self.input) > 0:
+                if s in ops and len(self.input) > 0 and len(self.stack) == 2 or len(self.stack) > 2 and len(self.input) > 0:
                     self.stack.append(''.join(map(str, self.input)))
                     self.compute(self.stack)
                     if s != "=":
                         self.send(s)
-                    print('1')
-                elif s in ops:
+                    self.stack.clear()
+                    print('KAVO')
+                    return self.stack
+                if s in ops and len(self.stack) <2:
                     self.stack.append(''.join(map(str, self.input)))
                     self.stack.append(s)
                     self.input.clear()
                     self.state = State.OPS
-                    print('2')
+                    print('EBAT')
 
 
 
@@ -137,6 +139,15 @@ class MyCalc():
         print ("input",self.input)
         print ('state',self.state)
         print ("stack",self.stack)
+
+
+    dict = [
+    [1,1],[1,2],[1,3]
+    [2,1],[2,2],[2,3]
+    [3,1],[3,2],[3,3]
+    ]
+
+
 
     def set_state(self, state):
         if self.state == "number":
