@@ -139,7 +139,7 @@ class MyCalc():
         print ("input",self.input)
         print ('state',self.state)
         print ("stack",self.stack)
-
+        #23112312312
 
     dict = [
     [1,1],[1,2],[1,3]
