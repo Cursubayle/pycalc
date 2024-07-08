@@ -38,130 +38,7 @@ class MyCalc():
 
 
     def send(self,s):
-        if s == 'C':
-            self.input.clear()
-            self.stack.clear()
-            self.state = State.OPS
-
-
-        match self.state:
-            case State.DIGITS:
-                if s in digits:
-                    self.input.append(s)
-                    print('3')
-
-                if s in ops and len(self.input) > 0 and len(self.stack) == 2 or len(self.stack) > 2 and len(self.input) > 0:
-                    self.stack.append(''.join(map(str, self.input)))
-                    self.compute(self.stack)
-                    if s != "=":
-                        self.send(s)
-                    self.stack.clear()
-                    print('KAVO')
-                    return self.stack
-                if s in ops and len(self.stack) <2:
-                    self.stack.append(''.join(map(str, self.input)))
-                    self.stack.append(s)
-                    self.input.clear()
-                    self.state = State.OPS
-                    print('EBAT')
-
-
-
-                print("input",self.input)
-                print('state',self.state)
-                print("stack",self.stack)
-                print(f"Нажал {s}")
-
-
-
-
-            case State.OPS:
-
-                if s in ops:
-                    if len(self.stack) > 2 and len(self.input) > 0:
-                        self.stack.append(''.join(map(str, self.input)))
-                        self.compute(self.stack)
-
-                    elif  len(self.stack) > 0 and self.stack[0] in ops or len(self.stack) == 2 and self.stack[1] in ops:
-                        self.stack.pop()
-
-                    self.stack.append(s)
-                    print('wew')
-
-                elif s in digits:
-                    self.input.append(s)
-                    self.state = State.DIGITS
-                    print('wow')
-                print("input",self.input)
-                print('state',self.state)
-                print("stack",self.stack)
-                print(f"Нажал {s}")
-
-
-
-
-
-
-
-
-    def seend(self, s):
-        if self.state == State.DIGITS:
-            if len(self.input) == 0 and s == '-':
-                self.input.append(s)
-            elif s == 'C':
-                self.input.clear()
-                self.stack.clear()
-            elif s in digits:
-                self.input.append(s)
-            elif len(self.input) > 1 and s in ops:
-                if s in ops and len(self.input) > 1 and len(self.stack) > 1:
-                    self.stack.append(''.join(map(str, self.input)))
-                    self.compute(self.stack)
-                else:
-                    self.stack.append(''.join(map(str, self.input)))
-                    self.state = State.OPS
-                    self.input.clear()
-
-        if self.state == State.OPS and s in ops:
-
-
-            self.stack.append(s)
-            self.state = State.DIGITS
-
-
-
-
-
-
-
-        print('len stack',len(self.stack))
-        print(f"Нажал {s}")
-        print ("input",self.input)
-        print ('state',self.state)
-        print ("stack",self.stack)
-        #23112312312
-
-    dict = [
-    [1,1],[1,2],[1,3]
-    [2,1],[2,2],[2,3]
-    [3,1],[3,2],[3,3]
-    ]
-
-
-
-    def set_state(self, state):
-        if self.state == "number":
-            self.state = "operator"
-            return self.state
-        if self.state == "operator":
-            self.state = "number"
-            return self.state
-
-
-
-
-
-
+        print('typed ', s)
 
 
 
@@ -178,7 +55,8 @@ class MainWindow(QMainWindow):
             b.clicked.connect(self.click_eq)
 
     def click_eq(self):
-        mc.send(self.sender().text())
+        dtext = mc.send(self.sender().text())
+        self.ui.digits.setText(dtext)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
