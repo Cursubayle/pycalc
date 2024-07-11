@@ -7,38 +7,132 @@ from ui_form import Ui_MainWindow
 
 from enum import Enum
 
-ops = ["=", "+", "-", "*", "/", "sqrt", "pow"]
-acts = ["AC", "C"]
+ops = ["+", "-", "*", "/"]
+acts = ["AC", "C", "="]
 digits = list("0123456789.")
 
 #1233
 
 class State(Enum):
-    OPS = 0
-    ACTS = 1
-    DIGITS = 2
-    FRST = 3
-    SCND = 4
+    CLEAR = 0
+    DIGITS = 1
+    OPS = 2
+
+
 
 
 class MyCalc():
     def __init__(self):
-        self.current_line = "0"
+        self.current_line = ""
         self.input = []
-        self.state = State.OPS
+        self.state = State.CLEAR
         self.stack = []
         print (self.state)
 
-    def compute(self,list):
-        print("result is: ",eval(''.join(map(str, self.stack))))
-        self.input.clear()
-        self.stack.clear()
-        print(self.input, self.stack)
+    def clear(self):
+        return
+    def number(self):
+        return
+    def op(self):
+        return
+
+    table = [ [State.CLEAR, clear] , [State.DIGITS , clear], [State.OPS, clear],
+            [State.CLEAR, number  ],       [State.DIGITS, number],     [State.OPS, number],
+            [State.CLEAR, op],       [State.DIGITS, op], [State.OPS, op]
+
+    ]
+
+
+    digitsTable = ['acts','number','op']
+
+
+    def do_event(self, event, value):
+        print (self.state)
+        match self.state:
+            case State.CLEAR:
+                match event:
+                    case 'number':
+                        self.state = State.DIGITS
+                        self.current_line += value
+                        print(self.current_line)
+                        return self.current_line
+
+                    case 'op':
+                        None
+
+                    case 'acts':
+                        None
+            case State.DIGITS:
+                match event:
+                    case 'number':
+                        self.current_line += value
+                        print(self.current_line)
+                        return self.current_line
+
+
+                    case 'op':
+                        self.state = State.OPS
+                        self.stack.append(self.current_line)
+                        self.current_line = ''
+                        self.current_line += value
+                        print(self.stack)
+                        return self.current_line
+
+                    case 'acts':
+                        self.current_line = ''
+                        self.stack.clear()
+                        return
+
+            case State.OPS:
+                match event:
+                    case 'number':
+                        self.state = State.DIGITS
+                        self.stack.append(self.current_line)
+                        print(self.stack)
+                        self.current_line = ''
+                        self.current_line += value
+                        print(self.current_line)
+                        return self.current_line
+
+                    case 'op':
+                        self.current_line = value
+                        return self.current_line
+
+                    case 'acts':
+                        match acts:
+                            case "C":
+                                None
+                                                                                                           #acts = ["AC", "C", "="]
+                            case "=":
+                                None
+                        self.current_line = ''
+                        self.stack.clear()
+                        return
+
 
 
 
     def send(self,s):
+
+
+        if s in digits:
+            return self.do_event('number', s)
+
+        elif s in ops:
+            return self.do_event('op', s)
+
+        elif s in acts:
+            return self.do_event('clear', s)
+
+
+
+
+        print(self.state)
         print('typed ', s)
+        self.current_line += s
+        return self.current_line
+
+
 
 
 
