@@ -7,7 +7,9 @@ from ui_form import Ui_MainWindow
 
 from enum import Enum
 
-ops = ["+", "-", "*", "/"]
+import math
+
+ops = ["+", "-", "*", "/","sqrt"]
 acts = ["AC", "C", "="]
 digits = list("0123456789.")
 
@@ -36,22 +38,24 @@ class MyCalc():
     def op(self):
         return
 
-    table = [ [State.CLEAR, clear] , [State.DIGITS , clear], [State.OPS, clear],
-            [State.CLEAR, number  ],       [State.DIGITS, number],     [State.OPS, number],
-            [State.CLEAR, op],       [State.DIGITS, op], [State.OPS, op]
 
-    ]
+
+
 
 
     digitsTable = ['acts','number','op']
 
 
     def do_event(self, event, value):
-        print (self.state)
+        print (self.state, value, event)
         match self.state:
             case State.CLEAR:
+                self.current_line = ''
+                self.stack.clear()
                 match event:
                     case 'number':
+                        print(self.current_line, "kavo")
+                        print(self.current_line)
                         self.state = State.DIGITS
                         self.current_line += value
                         print(self.current_line)
@@ -79,8 +83,25 @@ class MyCalc():
                         return self.current_line
 
                     case 'acts':
-                        self.current_line = ''
-                        self.stack.clear()
+                        print(value, "najal")
+                        match value:
+                            case 'C':
+                                #self.current_line = ''
+                                #self.stack.clear()
+                                self.state = State.CLEAR
+                                print(self.state)
+                                None
+                            case '=':
+                                if len(self.stack) > 1:
+                                    if self.stack[1] == "sqrt":
+                                        None
+                                    else:
+                                        self.current_line = str('%.2f' % eval(''.join(self.stack) + self.current_line))
+                                        self.state = State.CLEAR
+                                        print(self.state)
+                                return self.current_line
+
+
                         return
 
             case State.OPS:
@@ -101,20 +122,16 @@ class MyCalc():
                     case 'acts':
                         match acts:
                             case "C":
-                                None
+                                self.state = State.CLEAR
                                                                                                            #acts = ["AC", "C", "="]
                             case "=":
                                 None
-                        self.current_line = ''
-                        self.stack.clear()
                         return
 
 
 
 
     def send(self,s):
-
-
         if s in digits:
             return self.do_event('number', s)
 
@@ -122,7 +139,7 @@ class MyCalc():
             return self.do_event('op', s)
 
         elif s in acts:
-            return self.do_event('clear', s)
+            return self.do_event('acts', s)
 
 
 
