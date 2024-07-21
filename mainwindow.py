@@ -9,8 +9,8 @@ from enum import Enum
 
 import math
 
-ops = ["+", "-", "*", "/","sqrt"]
-acts = ["AC", "C", "="]
+ops = ["+", "-", "*", "/"]
+acts = ["AC", "C", "=","sqrt"]
 digits = list("0123456789.")
 
 #1233
@@ -50,10 +50,11 @@ class MyCalc():
         print (self.state, value, event)
         match self.state:
             case State.CLEAR:
-                self.current_line = ''
+
                 self.stack.clear()
                 match event:
                     case 'number':
+                        self.current_line = ''
                         print(self.current_line, "kavo")
                         print(self.current_line)
                         self.state = State.DIGITS
@@ -85,18 +86,27 @@ class MyCalc():
                     case 'acts':
                         print(value, "najal")
                         match value:
+                            case "sqrt":
+                                sqrt = math.sqrt(float(self.current_line))
+                                if sqrt.is_integer() == True:
+                                    self.current_line = str(int(sqrt))
+                                else:
+                                    self.current_line = (str('%.2f' % sqrt))
+                                self.state = State.CLEAR
+                                return self.current_line
                             case 'C':
-                                #self.current_line = ''
-                                #self.stack.clear()
+                                self.current_line = ""
+                            case 'AC':
                                 self.state = State.CLEAR
                                 print(self.state)
-                                None
+                                return
                             case '=':
                                 if len(self.stack) > 1:
-                                    if self.stack[1] == "sqrt":
-                                        None
-                                    else:
-                                        self.current_line = str('%.2f' % eval(''.join(self.stack) + self.current_line))
+                                        result = float('%.2f' % eval(''.join(self.stack) + self.current_line))
+                                        if result.is_integer() == True:
+                                            self.current_line = str(int(result))
+                                        else:
+                                            self.current_line = str(result)
                                         self.state = State.CLEAR
                                         print(self.state)
                                 return self.current_line
