@@ -70,14 +70,18 @@ class MyCalc():
             case State.DIGITS:
                 match event:
                     case 'number':
-                        self.current_line += value
-                        print(self.current_line)
-                        return self.current_line
+                        if value == "." and "." in self.current_line:
+                            return self.current_line
+                        else:
+                            self.current_line += value
+                            print(self.current_line)
+                            return self.current_line
 
 
                     case 'op':
                         self.state = State.OPS
                         self.stack.append(self.current_line)
+                        #self.ui.history.setText(self.stack[0])                                                                          #self.ui.digits.setText(dtext)
                         self.current_line = ''
                         self.current_line += value
                         print(self.stack)
