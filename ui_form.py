@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGridLayout, QLabel, QMainWindow,
-    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QLabel, QListWidget,
+    QListWidgetItem, QMainWindow, QMenuBar, QPushButton,
+    QSizePolicy, QStatusBar, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -144,14 +144,9 @@ class Ui_MainWindow(object):
         self.digits.setTextFormat(Qt.AutoText)
         self.digits.setScaledContents(False)
         self.digits.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-        self.history = QLabel(self.centralwidget)
-        self.history.setObjectName(u"history")
-        self.history.setGeometry(QRect(530, 40, 211, 381))
-        self.history.setBaseSize(QSize(0, 0))
-        self.history.setFont(font)
-        self.history.setTextFormat(Qt.AutoText)
-        self.history.setScaledContents(False)
-        self.history.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.listWidget = QListWidget(self.centralwidget)
+        self.listWidget.setObjectName(u"listWidget")
+        self.listWidget.setGeometry(QRect(530, 140, 256, 192))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -192,6 +187,5 @@ class Ui_MainWindow(object):
         self.pushButton_pow.setText(QCoreApplication.translate("MainWindow", u"x^2", None))
         self.pushButton_1.setText(QCoreApplication.translate("MainWindow", u"1", None))
         self.digits.setText(QCoreApplication.translate("MainWindow", u"0", None))
-        self.history.setText(QCoreApplication.translate("MainWindow", u"0", None))
     # retranslateUi
 
