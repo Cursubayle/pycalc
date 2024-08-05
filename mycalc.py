@@ -6,7 +6,7 @@ ops = ["+", "-", "*", "/"]
 acts = ["AC", "C", "=","sqrt"]
 digits = list("0123456789.")
 
-#1233
+#1233321123123132132
 #from mainwindow import MainWindow
 class State(Enum):
     CLEAR = 0
@@ -26,6 +26,7 @@ class MyCalc():
         self.input = []
         self.state = State.CLEAR
         self.stack = []
+        self.history = None
         print (self.state)
 
     def clear(self):
@@ -44,15 +45,19 @@ class MyCalc():
 
 
     def do_event(self, event, value):
+        print("history", self.history)
+        self.history = None
         #MainWindow.history_update(self,"123")
         print (self.state, value, event)
         match self.state:
+
             case State.CLEAR:
 
                 self.stack.clear()
                 match event:
                     case EventType.NUMBER:
-                        self.current_line = ''
+
+                        self.current_line = ""
                         print(self.current_line, "kavo")
                         print(self.current_line)
                         self.state = State.DIGITS
@@ -78,9 +83,12 @@ class MyCalc():
 
                     case EventType.OP:
                         self.state = State.OPS
+                        self.history = self.current_line
                         self.stack.append(self.current_line)
+                        #
                         #self.ui.history.setText(self.stack[0])                                                                          #self.ui.digits.setText(dtext)
-                        self.current_line = ''
+
+                        self.current_line = ""
                         self.current_line += value
                         print(self.stack)
                         return self.current_line
@@ -97,19 +105,24 @@ class MyCalc():
                                 self.state = State.CLEAR
                                 return self.current_line
                             case 'C':
+
                                 self.current_line = ""
                             case 'AC':
                                 self.state = State.CLEAR
                                 print(self.state)
                                 return
                             case '=':
+                                self.history = self.current_line
                                 if len(self.stack) >= 0:
                                         result = float('%.2f' % eval(''.join(self.stack) + self.current_line))
                                         if result.is_integer() == True:
                                             self.current_line = str(int(result))
                                         else:
                                             self.current_line = str(result)
+                                        self.history += '\n'+"="+ str(result)
                                         self.state = State.CLEAR
+
+
                                         print(self.state)
                                 return self.current_line
 
@@ -120,9 +133,11 @@ class MyCalc():
                 match event:
                     case EventType.NUMBER:
                         self.state = State.DIGITS
+                        self.history = self.current_line
                         self.stack.append(self.current_line)
                         print(self.stack)
-                        self.current_line = ''
+
+                        self.current_line = ""
                         self.current_line += value
                         print(self.current_line)
                         return self.current_line
@@ -148,6 +163,7 @@ class MyCalc():
                                     self.current_line = str(int(result))
                                 else:
                                     self.current_line = str(result)
+
 
                                 self.state = State.CLEAR
                                 print(self.state)

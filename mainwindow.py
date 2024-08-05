@@ -28,14 +28,20 @@ class MainWindow(QMainWindow):
                           self.ui.pushButton_dot, self.ui.pushButton_AC, self.ui.pushButton_sqrt, self.ui.pushButton_pow]:
             b.clicked.connect(self.click_eq)
 
+        if self.ui.clearButton.clicked:
+            print("clear") #= self.ui.listWidget.clear()
+
 
 
     def click_eq(self):
-        dtext = mc.send(self.sender().text())
-        self.ui.digits.setText(dtext)
+        mc.send(self.sender().text())
+        self.update()
 
-    def history_update(self,value):
-        self.ui.listWidget.addItem(value)
+    def update(self):
+
+        self.ui.digits.setText(mc.current_line)
+        if mc.history is not None:
+            self.ui.listWidget.addItem(mc.history)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -146,7 +146,10 @@ class Ui_MainWindow(object):
         self.digits.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
         self.listWidget = QListWidget(self.centralwidget)
         self.listWidget.setObjectName(u"listWidget")
-        self.listWidget.setGeometry(QRect(530, 140, 256, 192))
+        self.listWidget.setGeometry(QRect(530, 150, 256, 271))
+        self.clearButton = QPushButton(self.centralwidget)
+        self.clearButton.setObjectName(u"clearButton")
+        self.clearButton.setGeometry(QRect(690, 390, 88, 26))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -187,5 +190,6 @@ class Ui_MainWindow(object):
         self.pushButton_pow.setText(QCoreApplication.translate("MainWindow", u"x^2", None))
         self.pushButton_1.setText(QCoreApplication.translate("MainWindow", u"1", None))
         self.digits.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.clearButton.setText(QCoreApplication.translate("MainWindow", u"clear", None))
     # retranslateUi
 
