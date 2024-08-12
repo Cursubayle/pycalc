@@ -5,18 +5,20 @@ import math
 ops = ["+", "-", "*", "/"]
 acts = ["AC", "C", "=","sqrt"]
 digits = list("0123456789.")
-
+brackets = ["(",")"]
 #1233321123123132132
 #from mainwindow import MainWindow
 class State(Enum):
     CLEAR = 0
     DIGITS = 1
     OPS = 2
+    BRACKETS = 3
 
 class EventType(Enum):
     NUMBER = 0
     ACTS = 1
     OP = 2
+    BRACKETS = 3
 
 
 class MyCalc():
@@ -27,6 +29,7 @@ class MyCalc():
         self.state = State.CLEAR
         self.stack = []
         self.history = None
+        self.brcts = 0
         print (self.state)
 
     def clear(self):
@@ -70,6 +73,13 @@ class MyCalc():
 
                     case EventType.ACTS:
                         None
+                    case EventType.BRACKETS:
+                        if value == "(":
+                            self.current_line = ""
+                            self.brcts = 0
+                            self.current_line += value
+                            self.state = State.BRACKETS
+                            return self.current_line
             case State.DIGITS:
                 match event:
                     case EventType.NUMBER:
@@ -146,6 +156,12 @@ class MyCalc():
                         self.current_line = value
                         return self.current_line
 
+                        if value == "(":
+                            self.brcts = 0
+                            self.current_line += value
+                            self.state = State.BRACKETS
+                            return self.current_line
+
                     case EventType.ACTS:
                         print(value)
                         match value:
@@ -169,7 +185,45 @@ class MyCalc():
                                 print(self.state)
                                 return self.current_line
 
-                        return
+
+
+            case State.BRACKETS:
+                if self.brcts == 0:
+
+                    match event:
+                        case EventType.NUMBER:
+                            self.current_line += value
+                            return self.current_line
+                        case EventType.OP:
+                            self.current_line += value
+                            return self.current_line
+                        case EventType.ACTS:
+                            match value:
+                                case "C":
+                                    self.state = State.CLEAR
+                        case EventType.BRACKETS:
+                            if value == ")":
+                                self.brcts = 1
+                                self.current_line += value
+                                return self.current_line
+
+                else:
+                    match event:
+                        case EventType.NUMBER:
+                            return
+                        case EventType.OP:
+                            self.state = State.OPS
+                            self.history = self.current_line
+                            self.stack.append(self.current_line)
+                            #
+                            #self.ui.history.setText(self.stack[0])                                                                          #self.ui.digits.setText(dtext)
+
+                            self.current_line = ""
+                            self.current_line += value
+                            print(self.stack)
+                            return self.current_line
+
+
 
 
 
@@ -181,6 +235,8 @@ class MyCalc():
             self.event_type = EventType.OP
         elif s in acts:
             self.event_type = EventType.ACTS
+        elif s in brackets:
+            self.event_type = EventType.BRACKETS
         return self.do_event(self.event_type, s)
 
 

@@ -25,11 +25,16 @@ class MainWindow(QMainWindow):
                           self.ui.pushButton_4, self.ui.pushButton_5, self.ui.pushButton_6, self.ui.pushButton_7,
                           self.ui.pushButton_8, self.ui.pushButton_9, self.ui.pushButton_C, self.ui.pushButton_eq,
                           self.ui.pushButton_plus, self.ui.pushButton_minus, self.ui.pushButton_mult, self.ui.pushButton_div,
-                          self.ui.pushButton_dot, self.ui.pushButton_AC, self.ui.pushButton_sqrt, self.ui.pushButton_pow]:
+                          self.ui.pushButton_dot, self.ui.pushButton_AC, self.ui.pushButton_sqrt, self.ui.pushButton_pow, self.ui.pushButton_10, self.ui.pushButton]:
             b.clicked.connect(self.click_eq)
 
-        if self.ui.clearButton.clicked:
-            print("clear") #= self.ui.listWidget.clear()
+        self.ui.clearButton.clicked.connect(self.historyClear)
+
+    def historyClear(self):
+        self.ui.listWidget.clear()
+
+        #self.ui.slider.valueChanged.connect(self.slMove)
+
 
 
 
