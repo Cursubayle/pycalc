@@ -43,7 +43,8 @@ class MainWindow(QMainWindow):
         self.update()
 
     def update(self):
-
+        self.ui.state_2.setText(str(mc.event_type))
+        self.ui.state.setText(str(mc.state))
         self.ui.digits.setText(mc.current_line)
         if mc.history is not None:
             self.ui.listWidget.addItem(mc.history)

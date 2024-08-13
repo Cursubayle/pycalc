@@ -79,6 +79,7 @@ class MyCalc():
                             self.brcts = 0
                             self.current_line += value
                             self.state = State.BRACKETS
+                            self.brcts += 1
                             return self.current_line
             case State.DIGITS:
                 match event:
@@ -160,6 +161,7 @@ class MyCalc():
                             self.brcts = 0
                             self.current_line += value
                             self.state = State.BRACKETS
+                            self.brcts += 1
                             return self.current_line
 
                     case EventType.ACTS:
@@ -188,7 +190,10 @@ class MyCalc():
 
 
             case State.BRACKETS:
-                if self.brcts == 0:
+                print(self.brcts)
+
+
+                if self.brcts > 0:
 
                     match event:
                         case EventType.NUMBER:
@@ -202,10 +207,35 @@ class MyCalc():
                                 case "C":
                                     self.state = State.CLEAR
                         case EventType.BRACKETS:
-                            if value == ")":
-                                self.brcts = 1
-                                self.current_line += value
-                                return self.current_line
+                            match value:
+                                case ")":
+                                    self.brcts -= 1
+                                    self.current_line += value
+                                    return self.current_line
+                                case "(":
+                                    self.brcts += 1
+                                    self.current_line += value
+                                    return self.current_line
+
+
+
+                elif self.brcts == 0 and EventType.OP:
+
+                    self.state = State.OPS
+                    self.history = self.current_line
+                    self.stack.append(self.current_line)
+                        #
+                        #self.ui.history.setText(self.stack[0])                                                                          #self.ui.digits.setText(dtext)
+
+                    self.current_line = ""
+                    self.current_line += value
+                    print(self.stack)
+                    return self.current_line
+
+
+
+
+
 
                 else:
                     match event:
