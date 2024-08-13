@@ -187,6 +187,17 @@ class MyCalc():
                                 print(self.state)
                                 return self.current_line
 
+                    case EventType.BRACKETS:
+                        if value == "(":
+                            self.history = self.current_line
+                            self.stack.append(self.current_line)
+                            self.current_line = ""
+                            self.brcts = 0
+                            self.current_line += value
+                            self.state = State.BRACKETS
+                            self.brcts += 1
+                            return self.current_line
+
 
 
             case State.BRACKETS:
@@ -206,6 +217,9 @@ class MyCalc():
                             match value:
                                 case "C":
                                     self.state = State.CLEAR
+                                case "=":
+                                    return
+
                         case EventType.BRACKETS:
                             match value:
                                 case ")":
@@ -220,7 +234,11 @@ class MyCalc():
 
 
                 elif self.brcts == 0 and EventType.OP:
+                    if value == "=":
+                        self.state = State.DIGITS
+                        return self.do_event(EventType.ACTS, "=")
 
+                        print("hhhhhhhhhhhhhhhh")
                     self.state = State.OPS
                     self.history = self.current_line
                     self.stack.append(self.current_line)
