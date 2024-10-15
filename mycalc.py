@@ -1,6 +1,7 @@
 from enum import Enum
 import math
-
+from my_sort import MyEval
+j = MyEval()
 #from mainwindow import MainWindow
 ops = ["+", "-", "*", "/"]
 acts = ["AC", "C", "=","sqrt"]
@@ -125,7 +126,11 @@ class MyCalc():
                             case '=':
                                 self.history = self.current_line
                                 if len(self.stack) >= 0:
-                                        result = float('%.2f' % eval(''.join(self.stack) + self.current_line))
+                                        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                                        result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack) + self.current_line)))
+                                        print(result)
+                                        result = float('%.2f' % float(result[0]))
+                                        print('hehe')
                                         if result.is_integer() == True:
                                             self.current_line = str(int(result))
                                         else:
@@ -173,9 +178,13 @@ class MyCalc():
                             case "=":
                                 print(value)
                                 if self.current_line in ops:
-                                    result = float('%.2f' % eval(''.join(self.stack)))
+                                    result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack))))
+                                    result = float('%.2f' % float(result[0]))
+                                    # result = float('%.2f' % eval(''.join(self.stack)))
                                 else:
-                                    result = float('%.2f' % eval(''.join(self.stack) + self.current_line))
+                                    result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack) + self.current_line)))
+                                    result = float('%.2f' % float(result[0]))
+                                    # result = float('%.2f' % eval(''.join(self.stack) + self.current_line))
                                 print(result)
                                 if result.is_integer() == True:
                                     self.current_line = str(int(result))
