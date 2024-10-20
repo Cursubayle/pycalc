@@ -74,11 +74,8 @@ class MyEval():
                     stack.append(i)
                     continue
                 if i.data == ")":
-                    for i in stack:
-                        print(i.data,'haaaaaaaaaaaaaaaa')
                     try:
                         while stack[-1] != "(":
-                        # print(stack[-1].data)
                             output.append(stack.pop())
                         stack.pop()
                     except IndexError:
@@ -98,7 +95,6 @@ class MyEval():
                 stack.append(i.data)
             if i.type == TOKEN_TYPE.OPERATOR:
                 result = stack.pop(-2) + i.data + stack.pop(-1)
-                print(result)
                 stack.append(str(eval(result)))
         return stack
 
