@@ -126,20 +126,15 @@ class MyCalc():
                             case '=':
                                 self.history = self.current_line
                                 if len(self.stack) >= 0:
-                                        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-                                        result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack) + self.current_line)))
-                                        print(result)
-                                        result = float('%.2f' % float(result[0]))
-                                        print('hehe')
-                                        if result.is_integer() == True:
-                                            self.current_line = str(int(result))
-                                        else:
-                                            self.current_line = str(result)
+                                    result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack) + self.current_line)))
+                                    result = float('%.2f' % float(result[0]))
+                                    if result.is_integer():
+                                        self.current_line = str(int(result))
+                                    else:
+                                        self.current_line = str(result)
                                         self.history += '\n'+"="+ str(result)
                                         self.state = State.CLEAR
 
-
-                                        print(self.state)
                                 return self.current_line
 
 
@@ -161,32 +156,22 @@ class MyCalc():
                     case EventType.OP:
                         self.current_line = value
                         return self.current_line
-
-                        if value == "(":
-                            self.brcts = 0
-                            self.current_line += value
-                            self.state = State.BRACKETS
-                            self.brcts += 1
-                            return self.current_line
-
+                    
                     case EventType.ACTS:
                         print(value)
                         match value:
                             case "C":
                                 self.state = State.CLEAR
-                                                                                                           #acts = ["AC", "C", "="]
                             case "=":
                                 print(value)
                                 if self.current_line in ops:
                                     result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack))))
                                     result = float('%.2f' % float(result[0]))
-                                    # result = float('%.2f' % eval(''.join(self.stack)))
                                 else:
                                     result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack) + self.current_line)))
                                     result = float('%.2f' % float(result[0]))
-                                    # result = float('%.2f' % eval(''.join(self.stack) + self.current_line))
                                 print(result)
-                                if result.is_integer() == True:
+                                if result.is_integer():
                                     self.current_line = str(int(result))
                                 else:
                                     self.current_line = str(result)

@@ -87,6 +87,7 @@ class MyEval():
             except IndexError:
                 break
         return output
+    
     def Evaluate(self,value):
         """" вычисляем """
         stack = []

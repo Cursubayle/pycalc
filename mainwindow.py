@@ -1,21 +1,10 @@
 # This Python file uses the following encoding: utf-8
 import sys
-
 from PySide6.QtWidgets import QApplication, QMainWindow
-
 from ui_form import Ui_MainWindow
-
-
 from mycalc import MyCalc
-
-
-
-
-
-
-
-
 class MainWindow(QMainWindow):
+    """окно с кнопками"""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
@@ -33,15 +22,10 @@ class MainWindow(QMainWindow):
     def historyClear(self):
         self.ui.listWidget.clear()
 
-        #self.ui.slider.valueChanged.connect(self.slMove)
-
-
-
-
     def click_eq(self):
         mc.send(self.sender().text())
         self.update()
-
+        
     def update(self):
         self.ui.state_2.setText(str(mc.event_type))
         self.ui.state.setText(str(mc.state))
