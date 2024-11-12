@@ -1,7 +1,6 @@
 from enum import Enum
 import math
-from my_sort import MyEval
-j = MyEval()
+from my_sort import *
 #from mainwindow import MainWindow
 ops = ["+", "-", "*", "/"]
 acts = ["AC", "C", "=","sqrt"]
@@ -48,244 +47,28 @@ class MyCalc():
     digitsTable = ['acts','number','op']
 
 
-    def do_event(self, event, value):
+    def do_event(self, value):
         print("history", self.history)
         self.history = None
-        #MainWindow.history_update(self,"123")
-        print (self.state, value, event)
-        match self.state:
+        if Token(self.current_line + value):
+            self.current_line += value
+        else:
+            self.stack.append(self.current_line)
+            self.current_line = value
 
-            case State.CLEAR:
+        print(self.current_line, self.stack)
+        
 
-                self.stack.clear()
-                match event:
-                    case EventType.NUMBER:
-
-                        self.current_line = ""
-                        print(self.current_line, "kavo")
-                        print(self.current_line)
-                        self.state = State.DIGITS
-                        self.current_line += value
-                        print(self.current_line)
-                        return self.current_line
-
-                    case EventType.OP:
-                        None
-
-                    case EventType.ACTS:
-                        None
-                    case EventType.BRACKETS:
-                        if value == "(":
-                            self.current_line = ""
-                            self.brcts = 0
-                            self.current_line += value
-                            self.state = State.BRACKETS
-                            self.brcts += 1
-                            return self.current_line
-            case State.DIGITS:
-                match event:
-                    case EventType.NUMBER:
-                        if value == "." and "." in self.current_line:
-                            return self.current_line
-                        else:
-                            self.current_line += value
-                            print(self.current_line)
-                            return self.current_line
-
-
-                    case EventType.OP:
-                        self.state = State.OPS
-                        self.history = self.current_line
-                        self.stack.append(self.current_line)
-                        #
-                        #self.ui.history.setText(self.stack[0])                                                                          #self.ui.digits.setText(dtext)
-
-                        self.current_line = ""
-                        self.current_line += value
-                        print(self.stack)
-                        return self.current_line
-
-                    case EventType.ACTS:
-                        print(value, "najal")
-                        match value:
-                            case "sqrt":
-                                sqrt = math.sqrt(float(self.current_line))
-                                if sqrt.is_integer() == True:
-                                    self.current_line = str(int(sqrt))
-                                else:
-                                    self.current_line = (str('%.2f' % sqrt))
-                                self.state = State.CLEAR
-                                return self.current_line
-                            case 'C':
-
-                                self.current_line = ""
-                            case 'AC':
-                                self.state = State.CLEAR
-                                print(self.state)
-                                return
-                            case '=':
-                                self.history = self.current_line
-                                if len(self.stack) >= 0:
-                                    result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack) + self.current_line)))
-                                    result = float('%.2f' % float(result[0]))
-                                    if result.is_integer():
-                                        self.current_line = str(int(result))
-                                    else:
-                                        self.current_line = str(result)
-                                        self.history += '\n'+"="+ str(result)
-                                        self.state = State.CLEAR
-
-                                return self.current_line
-
-
-                        return
-
-            case State.OPS:
-                match event:
-                    case EventType.NUMBER:
-                        self.state = State.DIGITS
-                        self.history = self.current_line
-                        self.stack.append(self.current_line)
-                        print(self.stack)
-
-                        self.current_line = ""
-                        self.current_line += value
-                        print(self.current_line)
-                        return self.current_line
-
-                    case EventType.OP:
-                        self.current_line = value
-                        return self.current_line
-                    
-                    case EventType.ACTS:
-                        print(value)
-                        match value:
-                            case "C":
-                                self.state = State.CLEAR
-                            case "=":
-                                print(value)
-                                if self.current_line in ops:
-                                    result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack))))
-                                    result = float('%.2f' % float(result[0]))
-                                else:
-                                    result = j.Evaluate(j.post_fix(j.tokens(''.join(self.stack) + self.current_line)))
-                                    result = float('%.2f' % float(result[0]))
-                                print(result)
-                                if result.is_integer():
-                                    self.current_line = str(int(result))
-                                else:
-                                    self.current_line = str(result)
-
-
-                                self.state = State.CLEAR
-                                print(self.state)
-                                return self.current_line
-
-                    case EventType.BRACKETS:
-                        if value == "(":
-                            self.history = self.current_line
-                            self.stack.append(self.current_line)
-                            self.current_line = ""
-                            self.brcts = 0
-                            self.current_line += value
-                            self.state = State.BRACKETS
-                            self.brcts += 1
-                            return self.current_line
-
-
-
-            case State.BRACKETS:
-                print(self.brcts)
-
-
-                if self.brcts > 0:
-
-                    match event:
-                        case EventType.NUMBER:
-                            self.current_line += value
-                            return self.current_line
-                        case EventType.OP:
-                            self.current_line += value
-                            return self.current_line
-                        case EventType.ACTS:
-                            match value:
-                                case "C":
-                                    self.state = State.CLEAR
-                                case "=":
-                                    return
-
-                        case EventType.BRACKETS:
-                            match value:
-                                case ")":
-                                    self.brcts -= 1
-                                    self.current_line += value
-                                    return self.current_line
-                                case "(":
-                                    self.brcts += 1
-                                    self.current_line += value
-                                    return self.current_line
-
-
-
-                elif self.brcts == 0 and EventType.OP:
-                    if value == "=":
-                        self.state = State.DIGITS
-                        return self.do_event(EventType.ACTS, "=")
-
-                        print("hhhhhhhhhhhhhhhh")
-                    self.state = State.OPS
-                    self.history = self.current_line
-                    self.stack.append(self.current_line)
-                        #
-                        #self.ui.history.setText(self.stack[0])                                                                          #self.ui.digits.setText(dtext)
-
-                    self.current_line = ""
-                    self.current_line += value
-                    print(self.stack)
-                    return self.current_line
-
-
-
-
-
-
-                else:
-                    match event:
-                        case EventType.NUMBER:
-                            return
-                        case EventType.OP:
-                            self.state = State.OPS
-                            self.history = self.current_line
-                            self.stack.append(self.current_line)
-                            #
-                            #self.ui.history.setText(self.stack[0])                                                                          #self.ui.digits.setText(dtext)
-
-                            self.current_line = ""
-                            self.current_line += value
-                            print(self.stack)
-                            return self.current_line
-
+     
 
 
 
 
 
     def send(self,s):
-        if s in digits:
-            self.event_type = EventType.NUMBER
-        elif s in ops:
-            self.event_type = EventType.OP
-        elif s in acts:
-            self.event_type = EventType.ACTS
-        elif s in brackets:
-            self.event_type = EventType.BRACKETS
-        return self.do_event(self.event_type, s)
+        return self.do_event(s)
 
 
 
 
 
-        print(self.state)
-        print('typed ', s)
-        self.current_line += s
-        return self.current_line
