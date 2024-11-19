@@ -11,7 +11,6 @@ class TOKEN_TYPE(Enum):
     OPERATOR = 1
     BRACKET = 2
 
-
 class Token():
     """
     Класс для токена.
@@ -20,14 +19,13 @@ class Token():
     data : str
     type : TOKEN_TYPE
     """
-    
     operators = {'+':1,'-':1,'*':2,'/':2}
 
-    def __new__(self, data):
+    def __new__(cls, data):
         """
         Создаёт новый экземпляр класса из строки.
         """
-        rc = super(Token, self).__new__(self)
+        rc = super(Token, cls).__new__(cls)
         rc.data = data
         rc.type = None
         if rc.is_token(data):
@@ -165,8 +163,7 @@ class Evaluate():
         """проверка целое ли число"""
         if int(number) == float(number):
             return int(number)
-        else:
-            return float(number)
+        return float(number)
 
     def eeval(self):
         """вычисляем преобразованное в постфиксную запись выражение"""
@@ -184,5 +181,4 @@ class Evaluate():
         return self.is_int(float(stack[0]))
 
 if __name__== "__main__":
-    print(Evaluate('25+').eeval())
-    
+    print(Evaluate('25+5').eeval())

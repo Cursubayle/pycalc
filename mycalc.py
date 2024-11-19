@@ -1,10 +1,9 @@
-from calculation import Evaluate,Token,Tokenizer
+from calculation import Evaluate,Token
 
 class MyCalc():
     def __init__(self):
         self.current_line = ""
         self.stack = []
-        self.history = None
 
     def do_event(self, value):
         print(value)
