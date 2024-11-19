@@ -141,24 +141,6 @@ class Evaluate():
             a.append(i.data)
         return self.output
 
-    def addition(self,value1: str, value2: str) -> str:
-        """сложение"""
-        return str(float(value1) + float(value2))
-
-    def subtraction(self,value1: str, value2: str) -> str:
-        """вычитание"""
-        return (float(value1) - float(value2))
-
-    def multiplication(self,value1: str, value2: str) -> str:
-        """умножение"""
-        return (float(value1) * float(value2))
-
-    def division(self,value1: str, value2: str) -> str:
-        """деление"""
-        return str(float(value1) / float(value2))
-
-    ops = {"+":addition,"-":subtraction,"*":multiplication,"/":division}
-
     def is_int(self, number):
         """проверка целое ли число"""
         if int(number) == float(number):
@@ -167,17 +149,44 @@ class Evaluate():
 
     def eeval(self):
         """вычисляем преобразованное в постфиксную запись выражение"""
+        def addition() -> str:
+            """сложение"""
+            value2 = stack.pop()
+            value1 = stack.pop()
+            return str(float(value1) + float(value2))
+
+        def subtraction() -> str:
+            """вычитание"""
+            value2 = stack.pop()
+            value1 = stack.pop()
+            return (float(value1) - float(value2))
+
+        def multiplication() -> str:
+            """умножение"""
+            value2 = stack.pop()
+            value1 = stack.pop()
+            return (float(value1) * float(value2))
+
+        def division() -> str:
+            """деление"""
+            value2 = stack.pop()
+            value1 = stack.pop()
+            return str(float(value1) / float(value2))
+
+        ops = {"+":addition,"-":subtraction,"*":multiplication,"/":division}
+
+
         stack = []
         for i in self.infix_to_postfix(self.data):
             if i.type == TOKEN_TYPE.NUMBER:
                 stack.append(i.data)
             if i.type == TOKEN_TYPE.OPERATOR:
                 try:
-                    result = self.ops[i.data](self,stack.pop(-2),stack.pop(-1))
+                    result = ops[i.data]()
                     stack.append(str(result))
                 except IndexError:
                     return "error"
-        print(type(stack[0]))
+        print(stack)
         return self.is_int(float(stack[0]))
 
 if __name__== "__main__":
