@@ -32,15 +32,13 @@ class Token():
         rc.type = None
         if rc.is_token(data):
             return rc
-            # if rc.type == TOKEN_TYPE.OPERATOR
-            #     rc.data = operators   
-            # return rc
         return None
 
     def __repr__(self):
         return(f"('{self.data}', {self.type})")
 
     def is_number(self, n: str) -> bool:
+        """проверка на число"""
         return re.match(r'^-?\d+\.?\d*$', n)
 
     def is_token(self, pattern: str) -> bool:
@@ -61,7 +59,10 @@ class Token():
         return False
 
 
-class MyEval():
+class Tokenizer():
+    """
+    Разбираем выражение на токены
+    """
     def __init__(self, s=None):
         self.last_token = None
         self.compiled = None
@@ -69,7 +70,7 @@ class MyEval():
             self.compiled = self.tokens(s)
 
     def __repr__(self):
-        return(f"self.compiled = {self.compiled}")
+        return f"self.compiled = {self.compiled}"
 
     def tokens(self, s:str) -> list:
         """разбираем строку на токены"""
@@ -87,18 +88,17 @@ class MyEval():
             start_pos = end_pos
         return ls
 
-class Sortir():
+class Evaluate():
     """
-    Класс для сортировки токена
-    Атрибуты
-    --------
-    stack - стэк
-    output - вывод
+    Получаем на вход алгебраическое выражние в виде строчки
+    Разбираем на токены с помощью класса Tokenizer    
     """
-    def __init__(self):
+    def __init__(self, data: str):
+        self.data = Tokenizer(data).compiled
         self.stack = []
         self.output = []
-    def sort(self, s:list):
+
+    def infix_to_postfix(self, s:list) -> list:
         """
         Получаем список элементов типа ('(',TOKEN_TYPE.BRACKET)
         Преобразуем в постфиксную запись
@@ -107,11 +107,10 @@ class Sortir():
             if i.type == TOKEN_TYPE.NUMBER:
                 self.output.append(i)
                 # если токен число, заносим его в вывод
-                print('добавляем в вывод', i.data)
             if i.type == TOKEN_TYPE.OPERATOR:
                 try:
                     while Token.operators[i.data] <= Token.operators[self.stack[-1]]:
-                         # Если токен на вершине стека по приоритету выше или равен токену, то перекладываем оператор на вершине стека в вывод
+                            # Если токен на вершине стека по приоритету выше или равен токену, то перекладываем оператор на вершине стека в вывод
                         self.output.append(self.stack.pop())
                     print('aaaaa')
                 except IndexError:
@@ -128,8 +127,6 @@ class Sortir():
                     # если токен закрывающая скобка, то пока токен на вершине стека не открывающая скобка переложить оператор из стека в выходную очередь
                     try:
                         while self.stack[-1].data != "(":
-                            # print(self.stack[-1])
-                            print('bbbbbbbbbbbbbbb',self.stack[-1],self.stack)
                             self.output.append(self.stack.pop())
                         if self.stack[0].data == "(":
                             self.stack.pop(0)
@@ -140,72 +137,40 @@ class Sortir():
                 self.output.append(self.stack.pop())
             except IndexError:
                 break
-        
+
         a = []
         for i in self.output:
             a.append(i.data)
-        print(a,self.output)
         return self.output
 
-    # def Evaluate(self,value):
-    #     """" вычисляем """
-    #     def 
-    #     ops = {"+":addition}
-    #     stack = []
-    #     for i in value:
-    #         if i.type == TOKEN_TYPE.NUMBER:
-    #             stack.append(i.data)
-    #         if i.type == TOKEN_TYPE.OPERATOR:
-    #             result = stack.pop(-2) + i.data + stack.pop(-1)
-    #             stack.append(str(eval(result)))
-    #     return stack
-
-class Evaluate():
-    
-    
-
-    def __init__(self):
-        pass
-    
-    def addition(self,value1, value2):
+    def addition(self,value1: str, value2: str) -> float:
+        """сложение"""
         return float(value1) + float(value2)
     
-    def subtraction(self,value1, value2):
+    def subtraction(self,value1: str, value2: str) -> float:
+        """вычитание"""
         return float(value1) - float(value2)
     
-    def multiplication(self,value1, value2):
+    def multiplication(self,value1: str, value2: str) -> float:
+        """умножение"""
         return float(value1) * float(value2)
     
-    def division(self,value1, value2):
+    def division(self,value1: str, value2: str) -> float:
+        """деление"""
         return float(value1) / float(value2)
 
     ops = {"+":addition,"-":subtraction,"*":multiplication,"/":division}
 
-    def Evaluate(self, expression):
+    def eeval(self):
+        """вычисляем преобразованное в постфиксную запись выражение"""
         stack = []
-        for i in expression:
+        for i in self.infix_to_postfix(self.data):
             if i.type == TOKEN_TYPE.NUMBER:
                 stack.append(i.data)
             if i.type == TOKEN_TYPE.OPERATOR:
                 result = self.ops[i.data](self,stack.pop(-2),stack.pop(-1))
                 stack.append(result)
-            print(stack,"aboba")
-
-
+        return stack
 if __name__== "__main__":
-    j = MyEval('(25+5)*3')
-    print(j.tokens)
-    
-    # j = MyEval()
-    # # print(j)
-    # g = Token('531').is_token('531')
-    # print(Token('123+'))
-    # print(g)
-    # t = j.tokens('(25+5)*3')
-    # # print(t[0])
-    # k = Sortir()
-    # # k.sort(t)
-    # u = Evaluate()
-    # u.Evaluate(k.sort(t))
-
+    print(Evaluate('25+5').eeval())
     
