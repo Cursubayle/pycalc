@@ -50,14 +50,12 @@ class Token():
             self.type = TOKEN_TYPE.BRACKET
             return True
         if pattern in t_list:
-        #if pattern in [ z.data for z in t_list ]:
             self.type = TOKEN_TYPE.OPERATOR
             return True
         if self.is_number(pattern):
             self.type = TOKEN_TYPE.NUMBER
             return True
         return False
-
 
 class Tokenizer():
     """
@@ -110,7 +108,8 @@ class Evaluate():
             if i.type == TOKEN_TYPE.OPERATOR:
                 try:
                     while Token.operators[i.data] <= Token.operators[self.stack[-1]]:
-                            # Если токен на вершине стека по приоритету выше или равен токену, то перекладываем оператор на вершине стека в вывод
+                            # Если токен на вершине стека по приоритету выше или равен токену,
+                            # то перекладываем оператор на вершине стека в вывод
                         self.output.append(self.stack.pop())
                     print('aaaaa')
                 except IndexError:
@@ -124,7 +123,8 @@ class Evaluate():
                 if i.data == "(":
                     self.stack.append(i)
                 if i.data == ")":
-                    # если токен закрывающая скобка, то пока токен на вершине стека не открывающая скобка переложить оператор из стека в выходную очередь
+                    # если токен закрывающая скобка, то пока токен на вершине стека не открывающая
+                    # скобка переложить оператор из стека в выходную очередь
                     try:
                         while self.stack[-1].data != "(":
                             self.output.append(self.stack.pop())
@@ -143,23 +143,30 @@ class Evaluate():
             a.append(i.data)
         return self.output
 
-    def addition(self,value1: str, value2: str) -> float:
+    def addition(self,value1: str, value2: str) -> str:
         """сложение"""
-        return float(value1) + float(value2)
-    
-    def subtraction(self,value1: str, value2: str) -> float:
+        return str(float(value1) + float(value2))
+
+    def subtraction(self,value1: str, value2: str) -> str:
         """вычитание"""
-        return float(value1) - float(value2)
-    
-    def multiplication(self,value1: str, value2: str) -> float:
+        return (float(value1) - float(value2))
+
+    def multiplication(self,value1: str, value2: str) -> str:
         """умножение"""
-        return float(value1) * float(value2)
-    
-    def division(self,value1: str, value2: str) -> float:
+        return (float(value1) * float(value2))
+
+    def division(self,value1: str, value2: str) -> str:
         """деление"""
-        return float(value1) / float(value2)
+        return str(float(value1) / float(value2))
 
     ops = {"+":addition,"-":subtraction,"*":multiplication,"/":division}
+
+    def is_int(self, number):
+        """проверка целое ли число"""
+        if int(number) == float(number):
+            return int(number)
+        else:
+            return float(number)
 
     def eeval(self):
         """вычисляем преобразованное в постфиксную запись выражение"""
@@ -168,9 +175,14 @@ class Evaluate():
             if i.type == TOKEN_TYPE.NUMBER:
                 stack.append(i.data)
             if i.type == TOKEN_TYPE.OPERATOR:
-                result = self.ops[i.data](self,stack.pop(-2),stack.pop(-1))
-                stack.append(result)
-        return stack
+                try:
+                    result = self.ops[i.data](self,stack.pop(-2),stack.pop(-1))
+                    stack.append(str(result))
+                except IndexError:
+                    return "error"
+        print(type(stack[0]))
+        return self.is_int(float(stack[0]))
+
 if __name__== "__main__":
-    print(Evaluate('25+5').eeval())
+    print(Evaluate('25+').eeval())
     

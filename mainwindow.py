@@ -17,11 +17,6 @@ class MainWindow(QMainWindow):
                           self.ui.pushButton_dot, self.ui.pushButton_AC, self.ui.pushButton_sqrt, self.ui.pushButton_pow, self.ui.pushButton_10, self.ui.pushButton]:
             b.clicked.connect(self.click_eq)
 
-        self.ui.clearButton.clicked.connect(self.historyClear)
-
-    def historyClear(self):
-        self.ui.listWidget.clear()
-
     def click_eq(self):
         mc.send(self.sender().text())
         self.update()
